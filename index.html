@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<h1>2A03音源エミュレータ</h1>
+<script src="./jquery-3.6.0.slim.min.js"></script>
+<script src="./Channel/Channel.js"></script>
+<script src="./Channel/parameter.js"></script>
+<script src="./Channel/audio_node.js"></script>
+<script src="./Channel/key.js"></script>
+<script>
+const channel = new Channel();
+
+function frame() {
+	return Math.ceil(channel.audio_context.currentTime * channel.fps) + 1;
+}
+
+$(() => {
+	channel.duty_hi(frame(), $('[name="duty_hi"]:checked').val());
+	channel.onryo(frame(), parseInt($('[name="onryo"]:checked').val()));
+	channel.shuhasu(frame(), parseFloat($('[name="shuhasu"]:checked').val()));
+	channel.keyoff_flag(frame(), $('[name="keyoff_flag"]:checked').val() === 'true');
+	channel.keyoff_count(frame(), parseInt($('[name="keyoff_count"]:checked').val()));
+	channel.envelope_flag(frame(), $('[name="envelope_flag"]:checked').val() === 'true');
+	channel.sweep_flag(frame(), $('[name="sweep_flag"]:checked').val() === 'true');
+	channel.sweep_count(frame(), parseInt($('[name="sweep_count"]:checked').val()));
+	channel.sweep_ryo(frame(), parseInt($('[name="sweep_ryo"]:checked').val()));
+
+	$('[name="duty_hi"]').on('change', e => {
+		channel.duty_hi(frame(), e.target.value);
+	});
+	$('[name="onryo"]').on('change', e => {
+		channel.onryo(frame(), parseInt(e.target.value));
+	});
+	$('[name="shuhasu"]').on('change', e => {
+		channel.shuhasu(frame(), parseFloat(e.target.value));
+	});
+	$('[name="keyoff_flag"]').on('change', e => {
+		channel.keyoff_flag(frame(), e.target.value === 'true');
+	});
+	$('[name="keyoff_count"]').on('change', e => {
+		channel.keyoff_count(frame(), parseInt(e.target.value));
+	});
+	$('[name="envelope_flag"]').on('change', e => {
+		channel.envelope_flag(frame(), e.target.value === 'true');
+	});
+	$('[name="sweep_flag"]').on('change', e => {
+		channel.sweep_flag(frame(), e.target.value === 'true');
+	});
+	$('[name="sweep_count"]').on('change', e => {
+		channel.sweep_count(frame(), parseInt(e.target.value));
+	});
+	$('[name="sweep_ryo"]').on('change', e => {
+		channel.sweep_ryo(frame(), parseInt(e.target.value));
+	});
+});
+</script>
+<h2>矩形波</h2>
+<div>
+	<h3>デューティ比</h3>
+	<input type="radio" name="duty_hi" value="12.5%">12.5%
+	<input type="radio" name="duty_hi" value="25%">25%
+	<input type="radio" name="duty_hi" value="50%" checked>50%
+	<input type="radio" name="duty_hi" value="75%">75%
+</div>
+<div>
+	<h3>音量(エンベロープカウント兼用)</h3>
+	<input type="radio" name="onryo" value="0">0
+	<input type="radio" name="onryo" value="1">1
+	<input type="radio" name="onryo" value="2">2
+	<input type="radio" name="onryo" value="3">3
+	<input type="radio" name="onryo" value="4">4
+	<input type="radio" name="onryo" value="5">5
+	<input type="radio" name="onryo" value="6">6
+	<input type="radio" name="onryo" value="7">7
+	<input type="radio" name="onryo" value="8">8
+	<input type="radio" name="onryo" value="9">9
+	<input type="radio" name="onryo" value="10">10
+	<input type="radio" name="onryo" value="11">11
+	<input type="radio" name="onryo" value="12">12
+	<input type="radio" name="onryo" value="13">13
+	<input type="radio" name="onryo" value="14">14
+	<input type="radio" name="onryo" value="15" checked>15
+</div>
+<div>
+	<h3>周波数</h3>
+	<input type="radio" name="shuhasu" value="54.62">54.62Hz
+	<input type="radio" name="shuhasu" value="109.24">109.24Hz
+	<input type="radio" name="shuhasu" value="218.48">218.48Hz
+	<input type="radio" name="shuhasu" value="436.96" checked>436.96Hz
+	<input type="radio" name="shuhasu" value="873.91">873.91Hz
+	<input type="radio" name="shuhasu" value="1747.83">1747.83Hz
+	<input type="radio" name="shuhasu" value="3495.65">3495.65Hz
+</div>
+<div>
+	<h3>キーオフフラグ</h3>
+	<input type="radio" name="keyoff_flag" value="false" checked>false
+	<input type="radio" name="keyoff_flag" value="true">true
+</div>
+<div>
+	<h3>キーオフカウント</h3>
+	<input type="radio" name="keyoff_count" value="5">5
+	<input type="radio" name="keyoff_count" value="127" checked>127
+	<input type="radio" name="keyoff_count" value="10">10
+	<input type="radio" name="keyoff_count" value="1">1
+</div>
+<div>
+	<h3>エンベロープフラグ</h3>
+	<input type="radio" name="envelope_flag" value="false" checked>false
+	<input type="radio" name="envelope_flag" value="true">true
+</div>
+<div>
+	<h3>スイープフラグ</h3>
+	<input type="radio" name="sweep_flag" value="false" checked>false
+	<input type="radio" name="sweep_flag" value="true">true
+</div>
+<div>
+	<h3>スイープカウント</h3>
+	<input type="radio" name="sweep_count" value="0">0
+	<input type="radio" name="sweep_count" value="1">1
+	<input type="radio" name="sweep_count" value="2">2
+	<input type="radio" name="sweep_count" value="3">3
+	<input type="radio" name="sweep_count" value="4">4
+	<input type="radio" name="sweep_count" value="5">5
+	<input type="radio" name="sweep_count" value="6">6
+	<input type="radio" name="sweep_count" value="7" checked>7
+</div>
+<div>
+	<h3>スイープ量</h3>
+	<input type="radio" name="sweep_ryo" value="1" checked>1
+	<input type="radio" name="sweep_ryo" value="2">2
+	<input type="radio" name="sweep_ryo" value="3">3
+	<input type="radio" name="sweep_ryo" value="4">4
+	<input type="radio" name="sweep_ryo" value="5">5
+	<input type="radio" name="sweep_ryo" value="6">6
+	<input type="radio" name="sweep_ryo" value="7">7
+	<input type="radio" name="sweep_ryo" value="-1">-1
+	<input type="radio" name="sweep_ryo" value="-2">-2
+	<input type="radio" name="sweep_ryo" value="-3">-3
+	<input type="radio" name="sweep_ryo" value="-4">-4
+	<input type="radio" name="sweep_ryo" value="-5">-5
+	<input type="radio" name="sweep_ryo" value="-6">-6
+	<input type="radio" name="sweep_ryo" value="-7">-7
+</div>
+<div>
+	<h3>キーオン</h3>
+	<button onmousedown="channel.keyon(frame());">キーオン</button>
+</div>
